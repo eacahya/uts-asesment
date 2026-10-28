@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>UTS Asesmen Pembelajaran Fisika</title>
+<style>
+:root{
+  --bg:#f4f6f3; --card:#ffffff; --ink:#1c2420; --mute:#5d6b63; --line:#dbe2dc;
+  --pri:#0f6b4f; --pri-ink:#ffffff; --pri-soft:#e1f0e9; --warn:#b4531a; --warn-soft:#fbeadd;
+  --bad:#b3261e; --bad-soft:#fbe4e2; --flag:#c78a0a; --flag-soft:#fbf0cf;
+  --radius:12px; --shadow:0 1px 2px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#101512; --card:#18201b; --ink:#e7eee9; --mute:#9aa9a0; --line:#2b3a31;
+    --pri:#3fb88e; --pri-ink:#07140e; --pri-soft:#173026; --warn:#f0a06a; --warn-soft:#3a2415;
+    --bad:#ff8a80; --bad-soft:#3b1a18; --flag:#e9b949; --flag-soft:#38300f; --shadow:none}
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+h1,h2,h3{line-height:1.25;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 16px 48px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.hidden{display:none!important}
+button{font:inherit;cursor:pointer}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 18px;border-radius:10px;font-weight:600}
+.btn:hover{border-color:var(--pri)}
+.btn.pri{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.bad{background:var(--bad);color:#fff;border-color:var(--bad)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--pri);outline-offset:2px}
+
+/* login */
+#login .card{max-width:560px;margin:6vh auto 0;padding:28px}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--pri);font-weight:700}
+#login h1{font-size:26px;margin:6px 0 4px}
+.sub{color:var(--mute);margin:0 0 18px}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}
+.chip{background:var(--pri-soft);color:var(--pri);padding:4px 12px;border-radius:99px;font-size:14px;font-weight:600}
+label{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+input[type=text]{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+input[type=text]:focus{outline:3px solid var(--pri-soft);border-color:var(--pri)}
+#token{font-family:ui-monospace,Consolas,monospace;font-size:22px;letter-spacing:.3em;text-transform:uppercase;text-align:center}
+.rules{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:18px 0 8px;font-size:14px}
+.rules ul{margin:6px 0 0;padding-left:20px}
+.rules li{margin:3px 0}
+.agree{display:flex;gap:10px;align-items:flex-start;font-weight:500;margin:12px 0 16px}
+.agree input{margin-top:5px;width:18px;height:18px;flex:none}
+.err{background:var(--bad-soft);color:var(--bad);border-radius:10px;padding:10px 14px;margin:12px 0 0;font-size:14px;font-weight:600}
+.status{border-radius:10px;padding:10px 14px;font-size:14px;margin:0 0 14px;font-weight:600}
+.status.on{background:var(--pri-soft);color:var(--pri)} .status.off{background:var(--warn-soft);color:var(--warn)}
+
+/* exam */
+#bar{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line)}
+#bar .in{max-width:1040px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+#bar .who{flex:1;min-width:140px;line-height:1.25}
+#bar .who b{display:block;font-size:15px} #bar .who span{font-size:13px;color:var(--mute)}
+#timer{font:700 22px ui-monospace,Consolas,monospace;padding:4px 14px;border-radius:10px;background:var(--pri-soft);color:var(--pri);min-width:112px;text-align:center}
+#timer.warn{background:var(--warn-soft);color:var(--warn)} #timer.crit{background:var(--bad-soft);color:var(--bad);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.55}}
+.viol{font-size:13px;font-weight:700;color:var(--mute)} .viol.hot{color:var(--bad)}
+.prog{height:4px;background:var(--line)} .prog i{display:block;height:100%;background:var(--pri);width:0;transition:width .25s}
+.layout{display:grid;grid-template-columns:1fr 270px;gap:18px;margin-top:18px;align-items:start}
+@media (max-width:800px){.layout{grid-template-columns:1fr}.nav{position:static}.grid{grid-template-columns:repeat(8,1fr)}}
+.q{padding:24px}
+.qno{font-size:13px;font-weight:700;color:var(--pri);letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.qtext{font-size:18px;margin:10px 0 18px}
+.qtext blockquote{margin:12px 0 0;padding:10px 16px;border-left:4px solid var(--pri);background:var(--bg);border-radius:0 8px 8px 0;font-size:17px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);line-height:1.5}
+.opt:hover{border-color:var(--pri)}
+.opt .l{flex:none;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:14px}
+.opt.sel{border-color:var(--pri);background:var(--pri-soft)}
+.opt.sel .l{background:var(--pri);color:var(--pri-ink);border-color:var(--pri)}
+.qfoot{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-top:20px;align-items:center}
+.link{background:none;border:0;color:var(--mute);text-decoration:underline;padding:6px;font-size:14px}
+.flagbtn{border:1.5px solid var(--line);background:none;color:var(--mute);border-radius:99px;padding:3px 12px;font-size:13px;font-weight:600}
+.flagbtn.on{border-color:var(--flag);background:var(--flag-soft);color:var(--flag)}
+.nav{padding:16px;position:sticky;top:78px}
+.nav h3{font-size:14px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.nb{aspect-ratio:1;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;font-weight:700;font-size:14px;padding:0;position:relative}
+.nb.ans{background:var(--pri-soft);border-color:var(--pri);color:var(--pri)}
+.nb.flag::after{content:"";position:absolute;top:3px;right:3px;width:8px;height:8px;border-radius:50%;background:var(--flag)}
+.nb.cur{outline:3px solid var(--pri);outline-offset:1px}
+.legend{font-size:12px;color:var(--mute);margin:12px 0;display:grid;gap:3px}
+.nav .btn{width:100%}
+
+/* overlays */
+.ov{position:fixed;inset:0;background:rgba(10,16,12,.82);z-index:100;display:grid;place-items:center;padding:16px}
+.ov .card{max-width:480px;width:100%;padding:26px}
+.ov h2{font-size:21px;margin-bottom:8px} .ov p{margin:8px 0}
+.ov .row{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+.big{font-size:44px;font-weight:800;color:var(--pri);line-height:1}
+#wm{position:fixed;inset:0;z-index:15;pointer-events:none}
+#done .card{max-width:520px;margin:10vh auto 0;padding:32px;text-align:center}
+.ok-ico{width:60px;height:60px;border-radius:50%;background:var(--pri-soft);color:var(--pri);display:grid;place-items:center;margin:0 auto 14px;font-size:30px;font-weight:800}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media print{body *{display:none!important}}
+</style>
+</head>
+<body>
+
+<div id="cfgerr" class="wrap hidden"><div class="card" style="padding:24px"><h2>Belum dikonfigurasi</h2>
+<p>Isi konstanta <code>API_URL</code> di bagian atas skrip pada <code>index.html</code> dengan URL Web App Google Apps Script (lihat README.md).</p></div></div>
+
+<!-- LOGIN -->
+<main id="login" class="wrap">
+  <div class="card">
+    <div class="eyebrow">Ujian Tengah Semester</div>
+    <h1 id="lj">UTS Asesmen Pembelajaran Fisika</h1>
+    <p class="sub" id="lm">Program Studi Pendidikan Fisika · UIN Sunan Gunung Djati Bandung</p>
+    <div class="meta" id="lmeta"></div>
+    <div id="lstat" class="status off hidden"></div>
+
+    <form id="lform" autocomplete="off">
+      <label for="nim">NIM</label>
+      <input id="nim" type="text" inputmode="numeric" maxlength="20" required>
+      <label for="nama">Nama lengkap</label>
+      <input id="nama" type="text" maxlength="60" required>
+      <label for="token">Token ujian <span style="font-weight:400;color:var(--mute)">(diumumkan dosen)</span></label>
+      <input id="token" type="text" maxlength="10" required autocapitalize="characters" spellcheck="false">
+
+      <div class="rules"><b>Aturan ujian</b>
+        <ul>
+          <li>Ujian berjalan dalam <b>layar penuh</b>. Waktu dihitung server sejak Anda menekan “Mulai”.</li>
+          <li>Dilarang berpindah tab/aplikasi, keluar layar penuh, menyalin, menempel, atau mencetak.</li>
+          <li>Setiap pelanggaran dicatat. Pada pelanggaran ke-<b id="maxv">3</b>, jawaban <b>otomatis dikumpulkan</b>.</li>
+          <li>Ujian hanya dapat diikuti <b>satu kali</b> per NIM. Gunakan laptop/PC dengan baterai dan koneksi stabil.</li>
+          <li>Jawaban tersimpan otomatis; bila halaman termuat ulang, Anda dapat melanjutkan dari perangkat yang sama.</li>
+        </ul>
+      </div>
+      <label class="agree"><input type="checkbox" id="agree"><span>Saya mengerjakan ujian ini secara mandiri dan menyetujui aturan di atas.</span></label>
+      <button class="btn pri" id="go" type="submit" style="width:100%;padding:13px" disabled>Mulai ujian</button>
+      <div id="lerr" class="err hidden"></div>
+    </form>
+  </div>
+</main>
+
+<!-- EXAM -->
+<div id="exam" class="hidden">
+  <div id="bar">
+    <div class="in">
+      <div class="who"><b id="bname"></b><span id="bnim"></span></div>
+      <span class="viol" id="viol"></span>
+      <div id="timer" aria-live="off">--:--</div>
+      <button class="btn pri" id="finish">Kumpulkan</button>
+    </div>
+    <div class="prog"><i id="pbar"></i></div>
+  </div>
+  <div class="wrap" style="padding-top:0">
+    <div class="layout">
+      <section class="card q" id="qcard" aria-live="polite"></section>
+      <aside class="card nav">
+        <h3>Navigasi soal</h3>
+        <div class="grid" id="grid"></div>
+        <div class="legend"><span>■ hijau = terjawab</span><span>● titik kuning = ragu-ragu</span><span>Tips: tekan A–E untuk memilih, ← → untuk pindah.</span></div>
+        <div id="cnt" style="font-size:14px;font-weight:600"></div>
+      </aside>
+    </div>
+  </div>
+  <canvas id="wm" class="hidden"></canvas>
+</div>
+
+<!-- DONE -->
+<main id="done" class="wrap hidden">
+  <div class="card">
+    <div class="ok-ico">✓</div>
+    <h2>Jawaban Anda sudah terkirim</h2>
+    <p id="dmsg" style="color:var(--mute)">Terima kasih. Anda dapat menutup halaman ini.</p>
+    <div id="dscore" class="hidden" style="margin:18px 0"><div class="big" id="dsv"></div><div style="color:var(--mute)" id="dsd"></div></div>
+  </div>
+</main>
+
+<!-- OVERLAY -->
+<div id="ov" class="ov hidden" role="alertdialog" aria-modal="true"><div class="card" id="ovc"></div></div>
+
+<script>
+/* ============ KONFIGURASI ============ */
+const API_URL = "https://script.google.com/macros/s/AKfycbzEkOOEGNOITgjaTSDkmvmlpW9fZc62NvHL67mUDv_UsPuujRoRQyhnddyum2wOIiK8/exec";
+/* ===================================== */
+
+const $ = id => document.getElementById(id);
+const LS = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const S = { nim:'',nama:'',key:'',soal:[],jawab:{},ragu:{},idx:0,sisa:0,t0:0,viol:0,maks:3,active:false,submitting:false,lastFlag:0,pending:false };
+const canFS = !!(document.documentElement.requestFullscreen);
+
+/* ---------- util ---------- */
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmt(s){ // *miring* dan baris "> kutipan"
+  const lines = String(s).split('\n'); let html='', quote=[];
+  const inl = t => esc(t).replace(/\*([^*]+)\*/g,'<em>$1</em>');
+  for(const ln of lines){ if(ln.startsWith('> ')) quote.push(ln.slice(2)); else html += inl(ln)+' '; }
+  if(quote.length) html += '<blockquote>'+quote.map(inl).join('<br>')+'</blockquote>';
+  return html;
+}
+async function api(body){
+  const r = await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body),redirect:'follow'});
+  return r.json();
+}
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+function show(id){ ['login','exam','done'].forEach(x=>$(x).classList.toggle('hidden',x!==id)); window.scrollTo(0,0); }
+function remain(){ return S.sisa - (performance.now()-S.t0)/1000; }
+
+/* ---------- login ---------- */
+async function boot(){
+  if(!/^https:\/\/script\.google(usercontent)?\.com\//.test(API_URL)){ $('login').classList.add('hidden'); $('cfgerr').classList.remove('hidden'); return; }
+  const sess = LS.get('uts_session');
+  if(sess){ // lanjutkan sesi setelah reload
+    $('lstat').className='status on'; $('lstat').textContent='Memulihkan sesi ujian…';
+    try{
+      const r = await api({action:'resume',nim:sess.nim,sessionKey:sess.key});
+      if(r.ok){ enterExam(r,true); return; }
+      if(r.hapusSesi){ LS.del('uts_session'); LS.del('uts_draft'); }
+      if(r.selesai){ finishUI({}, r.pesan); return; }
+    }catch(e){ $('lstat').className='status off'; $('lstat').textContent='Tidak dapat menghubungi server. Periksa koneksi lalu muat ulang halaman.'; return; }
+  }
+  try{
+    const i = await api({action:'info'});
+    if(i.ok){
+      $('lj').textContent=i.judul; if(i.matkul) $('lm').textContent=i.matkul; $('maxv').textContent=i.maks;
+      $('lmeta').innerHTML = `<span class="chip">${i.jumlah} soal</span><span class="chip">${i.durasi} menit</span><span class="chip">Pilihan ganda A–E</span>`;
+      document.title=i.judul;
+      const st=$('lstat'); st.classList.remove('hidden');
+      st.className='status '+(i.dibuka?'on':'off'); st.textContent=i.dibuka?'Ujian dibuka. Masukkan data Anda dan token.':'Ujian belum dibuka. Tunggu instruksi dosen.';
+    } else { $('lstat').classList.add('hidden'); }
+  }catch(e){ const st=$('lstat'); st.classList.remove('hidden'); st.className='status off'; st.textContent='Tidak dapat menghubungi server ujian. Periksa koneksi internet.'; }
+}
+$('agree').addEventListener('change',()=>{ $('go').disabled=!$('agree').checked; });
+$('lform').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const btn=$('go'), er=$('lerr'); er.classList.add('hidden');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>Memeriksa token…';
+  if(canFS){ try{ await document.documentElement.requestFullscreen(); }catch(e){} } // harus dalam gestur klik
+  try{
+    const r = await api({action:'start',nim:$('nim').value.trim(),nama:$('nama').value.trim(),token:$('token').value.trim()});
+    if(!r.ok){ throw new Error(r.pesan||'Gagal memulai.'); }
+    LS.set('uts_session',{nim:r.nim,key:r.sessionKey});
+    enterExam(r,false);
+  }catch(e){
+    if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+    er.textContent = e instanceof TypeError ? 'Tidak dapat terhubung ke server. Periksa koneksi internet.' : e.message;
+    er.classList.remove('hidden'); btn.disabled=!$('agree').checked; btn.textContent='Mulai ujian';
+  }
+});
+
+/* ---------- exam ---------- */
+function enterExam(r,resumed){
+  S.nim=r.nim; S.nama=r.nama; S.key=r.sessionKey; S.soal=r.soal; S.maks=r.maks; S.viol=r.pelanggaran||0;
+  S.sisa=r.sisa; S.t0=performance.now();
+  const local = LS.get('uts_draft');
+  const useLocal = local && local.key===S.key;
+  S.jawab = Object.assign({}, r.draft||{}, useLocal?local.jawab:{});
+  S.ragu = useLocal?(local.ragu||{}):{};
+  S.idx = useLocal?(local.idx||0):0;
+  $('bname').textContent=S.nama; $('bnim').textContent=S.nim; $('exam').classList.remove('hidden');
+  document.title='Ujian berlangsung'; show('exam');
+  drawWatermark(); $('wm').classList.remove('hidden');
+  S.active=true; render(); tick(); startLoops();
+  if(canFS && !document.fullscreenElement){ // setelah reload, fullscreen butuh klik
+    overlay(`<h2>Masuk layar penuh</h2><p>Ujian dilanjutkan. Waktu Anda tetap berjalan. Tekan tombol di bawah untuk melanjutkan dalam layar penuh.</p><div class="row"><button class="btn pri" id="ovgo">Lanjutkan ujian</button></div>`,
+      ()=>document.documentElement.requestFullscreen().catch(()=>{}));
+  }
+  try{ if(navigator.keyboard&&navigator.keyboard.lock) navigator.keyboard.lock(['Escape']).catch(()=>{}); }catch(e){}
+}
+
+function render(){
+  const q=S.soal[S.idx], n=S.soal.length, a=S.jawab[q.id];
+  const L='ABCDE';
+  $('qcard').innerHTML = `
+    <div class="qno"><span>Soal ${S.idx+1} dari ${n}</span>
+      <button class="flagbtn ${S.ragu[q.id]?'on':''}" id="flag">${S.ragu[q.id]?'● Ragu-ragu':'Tandai ragu-ragu'}</button></div>
+    <div class="qtext">${fmt(q.t)}</div>
+    <div class="opts" role="radiogroup">${q.o.map((o,i)=>`
+      <button class="opt ${a===o.k?'sel':''}" role="radio" aria-checked="${a===o.k}" data-k="${o.k}">
+        <span class="l">${L[i]}</span><span>${fmt(o.t)}</span></button>`).join('')}</div>
+    <div class="qfoot">
+      <button class="btn" id="prev" ${S.idx===0?'disabled':''}>← Sebelumnya</button>
+      <button class="link" id="clr" ${a?'':'disabled'}>Hapus jawaban</button>
+      <button class="btn pri" id="next" ${S.idx===n-1?'disabled':''}>Berikutnya →</button>
+    </div>`;
+  $('qcard').querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(b.dataset.k));
+  $('flag').onclick=()=>{ S.ragu[q.id]=!S.ragu[q.id]; persist(); render(); };
+  $('prev').onclick=()=>go(S.idx-1); $('next').onclick=()=>go(S.idx+1);
+  $('clr').onclick=()=>{ delete S.jawab[q.id]; persist(); render(); };
+  $('grid').innerHTML = S.soal.map((x,i)=>`<button class="nb ${S.jawab[x.id]?'ans':''} ${S.ragu[x.id]?'flag':''} ${i===S.idx?'cur':''}" data-i="${i}" aria-label="Soal ${i+1}">${i+1}</button>`).join('');
+  $('grid').querySelectorAll('.nb').forEach(b=>b.onclick=()=>go(+b.dataset.i));
+  const done=Object.keys(S.jawab).length;
+  $('cnt').textContent=`Terjawab ${done} / ${n}`; $('pbar').style.width=(done/n*100)+'%';
+  updViol();
+}
+function go(i){ if(i<0||i>=S.soal.length) return; S.idx=i; persist(); render(); window.scrollTo(0,0); }
+function pick(k){ S.jawab[S.soal[S.idx].id]=k; persist(); render(); }
+function persist(){ LS.set('uts_draft',{key:S.key,jawab:S.jawab,ragu:S.ragu,idx:S.idx}); }
+function updViol(){ const v=$('viol'); v.textContent=`Pelanggaran ${S.viol}/${S.maks}`; v.classList.toggle('hot',S.viol>0); }
+
+/* timer + autosave */
+let tmr=null, saver=null;
+function tick(){
+  const r=Math.max(0,Math.ceil(remain())), m=String(Math.floor(r/60)).padStart(2,'0'), s=String(r%60).padStart(2,'0');
+  const t=$('timer'); t.textContent=`${m}:${s}`; t.className=r<=60?'crit':r<=300?'warn':'';
+  if(r<=0 && S.active && !S.submitting){ submit('waktu'); }
+}
+function startLoops(){
+  clearInterval(tmr); clearInterval(saver);
+  tmr=setInterval(tick,500);
+  saver=setInterval(async()=>{
+    if(!S.active||S.submitting) return;
+    try{ const r=await api({action:'save',nim:S.nim,sessionKey:S.key,jawab:S.jawab});
+      if(r.ok){ S.sisa=r.sisa; S.t0=performance.now(); if(r.pelanggaran>S.viol){S.viol=r.pelanggaran;updViol();} }
+      else if(r.selesai){ finishUI({}, 'Sesi Anda telah selesai.'); } }catch(e){}
+  },30000);
+}
+
+/* ---------- overlay ---------- */
+let ovCb=null;
+function overlay(html,cb){ $('ovc').innerHTML=html; $('ov').classList.remove('hidden'); ovCb=cb||null;
+  const g=$('ovgo'); if(g) g.onclick=()=>{ closeOv(); if(ovCb) ovCb(); }; }
+function closeOv(){ $('ov').classList.add('hidden'); $('ovc').innerHTML=''; }
+
+/* ---------- pengawasan ---------- */
+function flag(jenis,count=true){
+  if(!S.active||S.submitting) return;
+  const now=Date.now();
+  if(count){ if(now-S.lastFlag<2000){ return; } S.lastFlag=now; S.viol++; updViol(); }
+  api({action:'violation',nim:S.nim,sessionKey:S.key,jenis:jenis,hitung:count}).catch(()=>{});
+  if(!count) return;
+  if(S.viol>=S.maks){ submit('pelanggaran'); return; }
+  overlay(`<h2 style="color:var(--bad)">⚠ Pelanggaran ${S.viol} dari ${S.maks}</h2>
+    <p>Terdeteksi: <b>${esc(jenis.replace(/_/g,' '))}</b>.</p>
+    <p>Pelanggaran berikutnya (${S.maks-S.viol} lagi) akan membuat jawaban Anda <b>otomatis dikumpulkan</b>. Waktu ujian tetap berjalan.</p>
+    <div class="row"><button class="btn pri" id="ovgo">Kembali ke ujian</button></div>`,
+    ()=>{ if(canFS&&!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{}); });
+}
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) flag('pindah_tab_atau_aplikasi'); });
+window.addEventListener('blur',()=>{ setTimeout(()=>{ if(S.active&&!document.hasFocus()&&!document.hidden) flag('jendela_kehilangan_fokus'); },400); });
+document.addEventListener('fullscreenchange',()=>{ if(S.active&&canFS&&!document.fullscreenElement&&!S.submitting) flag('keluar_layar_penuh'); });
+['copy','cut','paste','contextmenu','dragstart','selectstart'].forEach(ev=>document.addEventListener(ev,e=>{
+  if(!S.active) return; if(e.target&&e.target.closest&&e.target.closest('input')) return;
+  e.preventDefault(); if(ev==='copy'||ev==='cut'||ev==='paste') flag('coba_'+ev,false);
+}));
+window.addEventListener('beforeprint',()=>flag('coba_cetak',false));
+document.addEventListener('keydown',e=>{
+  if(!S.active) return;
+  const k=e.key, c=e.ctrlKey||e.metaKey;
+  const blocked = k==='F12'||k==='PrintScreen'||(c&&['c','v','x','a','p','s','u'].includes(k.toLowerCase()))||(c&&e.shiftKey&&['i','j','c'].includes(k.toLowerCase()));
+  if(blocked){ e.preventDefault(); flag('tombol_terlarang_'+k,false); return; }
+  if(!$('ov').classList.contains('hidden')) return;
+  const up=k.toUpperCase();
+  if(!c&&!e.altKey){
+    if(['A','B','C','D','E'].includes(up)&&!document.activeElement.matches('input')){ const q=S.soal[S.idx], o=q.o['ABCDE'.indexOf(up)]; if(o) pick(o.k); }
+    else if(k==='ArrowRight') go(S.idx+1); else if(k==='ArrowLeft') go(S.idx-1);
+  }
+});
+window.addEventListener('beforeunload',e=>{ if(S.active&&!S.submitting){ e.preventDefault(); e.returnValue=''; } });
+
+/* watermark identitas (menyulitkan foto/screenshot layar) */
+function drawWatermark(){
+  const cv=$('wm'); const dpr=1; cv.width=innerWidth*dpr; cv.height=innerHeight*dpr;
+  const g=cv.getContext('2d'); g.clearRect(0,0,cv.width,cv.height);
+  g.font='600 15px system-ui,sans-serif'; g.fillStyle='rgba(120,130,125,.16)'; g.rotate(-Math.PI/9);
+  const t=`${S.nim} · ${S.nama}`;
+  for(let y=-200;y<cv.height+400;y+=110) for(let x=-300;x<cv.width+300;x+=Math.max(300,g.measureText(t).width+90)) g.fillText(t,x+(y/110%2?150:0),y);
+}
+addEventListener('resize',()=>{ if(S.active) drawWatermark(); });
+
+/* ---------- kumpulkan ---------- */
+$('finish').onclick=()=>{
+  const n=S.soal.length, done=Object.keys(S.jawab).length, ragu=Object.values(S.ragu).filter(Boolean).length;
+  const blank=S.soal.map((q,i)=>S.jawab[q.id]?null:i+1).filter(Boolean);
+  overlay(`<h2>Kumpulkan jawaban?</h2>
+    <p>Terjawab <b>${done}</b> dari ${n} soal${ragu?`, <b>${ragu}</b> ditandai ragu-ragu`:''}.</p>
+    ${blank.length?`<p style="color:var(--warn)">Belum dijawab: no. ${blank.join(', ')}</p>`:''}
+    <p>Setelah dikumpulkan, jawaban <b>tidak dapat diubah</b>.</p>
+    <div class="row"><button class="btn" id="ovno">Kembali</button><button class="btn pri" id="ovyes">Ya, kumpulkan</button></div>`);
+  $('ovno').onclick=closeOv; $('ovyes').onclick=()=>submit('manual');
+};
+
+async function submit(alasan){
+  if(S.submitting) return; S.submitting=true;
+  overlay(`<h2><span class="spin"></span>Mengirim jawaban…</h2><p id="subm">Jangan tutup halaman ini.</p><div class="row hidden" id="subrow"><button class="btn pri" id="resend">Kirim ulang</button></div>`);
+  const payload={action:'submit',nim:S.nim,sessionKey:S.key,jawab:S.jawab,alasan:alasan,pelanggaran:S.viol};
+  LS.set('uts_pending',payload);
+  for(let i=0;;i++){
+    try{
+      const r=await api(payload);
+      if(r.ok){ finishUI(r); return; }
+      if(r.retry){ await sleep(1500+i*500); continue; }
+      $('subm').textContent=r.pesan||'Gagal mengirim.'; $('subrow').classList.remove('hidden'); await waitResend(); continue;
+    }catch(e){
+      $('subm').textContent='Koneksi bermasalah. Mencoba lagi otomatis… (jawaban Anda aman di perangkat ini)';
+      if(i>=4){ $('subrow').classList.remove('hidden'); await waitResend(); } else await sleep(2000*(i+1));
+    }
+  }
+}
+function waitResend(){ return new Promise(res=>{ const b=$('resend'); b.onclick=()=>{ $('subrow').classList.add('hidden'); res(); }; }); }
+
+function finishUI(r,msg){
+  S.active=false; clearInterval(tmr); clearInterval(saver); closeOv();
+  LS.del('uts_session'); LS.del('uts_draft'); LS.del('uts_pending');
+  if(document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+  $('wm').classList.add('hidden'); document.title='Ujian selesai'; show('done');
+  if(msg) $('dmsg').textContent=msg;
+  if(r&&r.tampil&&r.skor!=null){ $('dscore').classList.remove('hidden'); $('dsv').textContent=r.skor; $('dsd').textContent=`${r.benar} benar dari ${r.total} soal`; }
+}
+
+boot();
+</script>
+</body>
+</html>
